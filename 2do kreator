@@ -2,10 +2,12 @@
 ====
 - build out w/o reccuring payments and change later? get MVP out
 - comment code
+- change to Members struct mapping with creatorId and level to track subscriptions
 - Secure contract w/ OpenZepplin https://docs.openzeppelin.com/contracts/4.x/api/security
 - OpenZepplin MerkleProof for storing large amounts of data
 - how to subscribe users to reccuring payments? do something like ERC20 approve+transerFrom at initial transaction
 - run tests
+- contract owner?
 - creator first+last name?
 - add social links to creator struct
 - use SafeMath
@@ -20,6 +22,7 @@
 - open page for myself
 - upload to public git repo
 - push on discords?
+- verify contract
 - apply for grant on gitcoin? Coinbase? Juicebox? Bankless DAO?
 - a16z report stating creators would prefer web3 https://a16zcrypto.com/state-of-crypto-report-a16z-2022/
 - on-chain cronjob https://github.com/jfdelgad/ETH-Tempus/blob/master/README.md
@@ -28,7 +31,7 @@
 
 data
 =====
-Creator (name, description, banner, category [mapping {uint256 => Category}])
+Creator (name, description, banner, category [mapping {uint256 => Category}], uint256 created, uint256 updated)
 Post (timestamp, title, data, banner, likes, comments)
 Levels (cost, title, media, description)
 Members (wallet, subscriptions array IDs)

@@ -1,5 +1,5 @@
-pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0 <0.9.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; 
@@ -12,29 +12,29 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
  */
 contract Kreator {
   /* ========== GLOBAL VARIABLES ========== */
-
-  // store information about categories
-  struct Category {
-    string name;
-    string description;
-  }
-
   // stores information about creators
   struct Creator {
-    string name;
+    uint256 creatorId;
+    string firstName;
+    string lastName;
     string description;
     string banner;
-    Category[] category;
+    Category category;
+    uint256 created;
+    uint256 updated;
   }
 
   // store information about creator posts
   struct Post {
-    string timestamp;
+    uint256 postId;
+    uint256 timestamp;
     string title;
     string data;
     string banner;
     string likes;   // change to struct
     string comments;    // change to struct
+    uint256 created;
+    uint256 updated;
   }
 
   // store information about creator levels
@@ -45,13 +45,26 @@ contract Kreator {
     string description;
   }
 
-  // store information 
+  // store information about members
+  struct Members {
+    address wallet;
+    string[] subscriptions;   // array of creatorIds, change to mapping with creatorId and level
+  }
 
-  mapping (uint256 => Creator) creators;
+  // store information about categories
+  struct Category {
+    string name;
+    string description;
+  }
 
-  using SafeMath for uint256; //outlines use of SafeMath for uint256 variables
+  uint256 private creatorCounter = 0;
+  Creator[] creators;
+
+  //outlines use of SafeMath for uint256 variables
+  using SafeMath for uint256;
 
   /* ========== EVENTS ========== */
+  event CreatorCreated(uint256 creatorId, uint256 created);
 
   /* ========== CONSTRUCTOR ========== */
   constructor() payable {
@@ -60,15 +73,41 @@ contract Kreator {
 
   /**
     * @notice create a new creator and adds it to the creator array
-    * @param _name name of creator
+    * @param _firstName first name of creator
+    * @param _lastName last name of creator
     * @param _description creator description
     * @param _banner IPFS URL of creator banner image
+    * @return output success/fail of transaction
     * NOTE: optimize function for gas
   */
-  function createCreator(string memory _name, string memory _description, string memory _banner) public {
-      require(bytes(_name).length > 0, "Name can't be empty");
+  function createCreator(
+    string memory _firstName,
+    string memory _lastName,
+    string memory _description,
+    string memory _banner) external returns(bool output) {
+      require(bytes(_firstName).length > 0, "First Name can't be empty");
+      require(bytes(_lastName).length > 0, "Last Name can't be empty");
+      require(bytes(_description).length > 0, "Description can't be empty");
+      require(bytes(_banner).length > 0, "Banner URL can't be empty");
+
+      creatorCounter++;   // increment creator counter
+      creators.push(
+        Creator(
+          creatorCounter,
+          _firstName,
+          _lastName,
+          _description,
+          _banner,
+          Category("test","test"),
+          block.timestamp,
+          block.timestamp
+        )
+      );
+
+      return true;
+
       //console.log(msg.sender,"set purpose to",purpose);
-      //emit SetPurpose(msg.sender, purpose);
+      //emit CreatorCreated();
   }
 
   // to support receiving ETH by default
